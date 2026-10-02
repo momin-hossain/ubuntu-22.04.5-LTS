@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Start Work
+Comment=Open Chrome, VS Code, Terminal and Projects folder
+Icon=applications-development
+Exec=/home/momen/.local/bin/start-work
+Terminal=false

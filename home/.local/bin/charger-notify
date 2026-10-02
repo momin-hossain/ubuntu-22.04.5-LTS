@@ -1,0 +1,45 @@
+#!/bin/bash
+exec 9>/tmp/charger-notify.lock; flock -n 9 || exit 0
+ac_state() {
+  for d in /sys/class/power_supply/*; do
+    if [ "$(cat "$d/type" 2>/dev/null)" = "Mains" ]; then
+      cat "$d/online" 2>/dev/null
+      return
+    fi
+  done
+  echo 1
+}
+apply_mode() {
+  if [ "$1" = "1" ]; then
+    gsettings set org.gnome.desktop.interface clock-show-seconds true
+    powerprofilesctl set balanced 2>/dev/null
+  else
+    gsettings set org.gnome.desktop.interface clock-show-seconds false
+    powerprofilesctl set power-saver 2>/dev/null
+  fi
+}
+notified=$(ac_state)
+apply_mode "$notified"
+candidate=$notified
+stable=0
+while true; do
+  sleep 1
+  now=$(ac_state)
+  if [ "$now" != "$candidate" ]; then
+    candidate=$now
+    stable=0
+    continue
+  fi
+  stable=$((stable + 1))
+  if [ "$stable" -ge 2 ] && [ "$candidate" != "$notified" ]; then
+    apply_mode "$candidate"
+    if [ "$candidate" = "1" ]; then
+      paplay /usr/share/sounds/Yaru/stereo/device-added.oga &
+      notify-send -a Charger -i battery-full-charging "Charger connected" "Running on AC power"
+    else
+      paplay /usr/share/sounds/Yaru/stereo/device-removed.oga &
+      notify-send -a Charger -i battery-low "Charger disconnected" "Battery saver on"
+    fi
+    notified=$candidate
+  fi
+done

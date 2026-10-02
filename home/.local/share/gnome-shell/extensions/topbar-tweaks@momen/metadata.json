@@ -1,0 +1,6 @@
+{
+  "uuid": "topbar-tweaks@momen",
+  "name": "Top Bar Tweaks",
+  "description": "Top bar menus open only on click, not on hover",
+  "shell-version": ["42"]
+}

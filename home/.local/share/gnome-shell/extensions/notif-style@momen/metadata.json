@@ -1,0 +1,6 @@
+{
+  "uuid": "notif-style@momen",
+  "name": "Notification Style",
+  "description": "Compact glass notifications at the top-right, sliding in from the right",
+  "shell-version": ["42"]
+}

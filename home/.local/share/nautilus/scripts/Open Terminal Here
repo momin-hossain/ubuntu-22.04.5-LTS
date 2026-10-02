@@ -1,0 +1,5 @@
+#!/bin/bash
+uri="${NAUTILUS_SCRIPT_CURRENT_URI:-}"
+dir=$(python3 -c 'import sys, urllib.parse; u = sys.argv[1]; print(urllib.parse.unquote(u[7:]) if u.startswith("file://") else "")' "$uri")
+[ -d "$dir" ] || dir="$PWD"
+gnome-terminal --working-directory="$dir"

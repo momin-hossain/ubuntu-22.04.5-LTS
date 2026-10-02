@@ -1,0 +1,5 @@
+#!/bin/bash
+f="/tmp/shot-$(date +%s).png"
+sleep 0.3
+gnome-screenshot -a -f "$f" || exit 0
+[ -s "$f" ] && ksnip -e "$f"

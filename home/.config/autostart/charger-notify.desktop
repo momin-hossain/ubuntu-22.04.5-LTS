@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=Charger Notify
+Exec=/home/momen/.local/bin/charger-notify

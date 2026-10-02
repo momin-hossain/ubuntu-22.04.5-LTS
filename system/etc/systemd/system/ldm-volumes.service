@@ -1,0 +1,11 @@
+[Unit]
+Description=Assemble Windows dynamic disk volumes
+DefaultDependencies=no
+After=systemd-udev-trigger.service
+Before=local-fs-pre.target
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c 'for i in $(seq 1 50); do [ -b /dev/sda4 ] && break; sleep 0.2; done; /usr/bin/ldmtool create all'
+[Install]
+WantedBy=local-fs-pre.target

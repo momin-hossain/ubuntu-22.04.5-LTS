@@ -1,0 +1,6 @@
+{
+  "uuid": "desktop-clocks@momen",
+  "name": "Desktop World Clocks",
+  "description": "macOS-style analog world clocks on the desktop",
+  "shell-version": ["42"]
+}

@@ -1,0 +1,6 @@
+{
+  "uuid": "dev-services@momen",
+  "name": "Dev Services",
+  "description": "Start/stop Apache, MySQL (XAMPP) and PostgreSQL from the top bar",
+  "shell-version": ["42"]
+}

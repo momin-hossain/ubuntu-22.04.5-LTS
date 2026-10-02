@@ -1,0 +1,43 @@
+#!/bin/bash
+for p in $(pgrep -f "$HOME/.local/bin/session-keeper"); do
+  [ "$p" -lt "$$" ] && { pkill -P "$p"; kill "$p"; } 2>/dev/null
+done
+sleep 1
+exec 9>/tmp/session-keeper.lock; flock -w 40 9 || exit 0
+F=~/.cache/session-apps
+sleep 8
+pgrep -x chrome >/dev/null || (google-chrome >/dev/null 2>&1 &)
+if [ -s "$F" ]; then
+  grep -qx code "$F" && ! pgrep -x code >/dev/null && (code >/dev/null 2>&1 &)
+~/.local/bin/max-code >/dev/null 2>&1 &
+  grep -qx files "$F" && (nautilus >/dev/null 2>&1 &)
+  args=(); first=1
+  while IFS= read -r d; do
+    [ -d "$d" ] || d="$HOME"
+    if [ $first = 1 ]; then args+=(--working-directory="$d"); first=0
+    else args+=(--tab --working-directory="$d"); fi
+  done < <(grep '^term ' "$F" | cut -d' ' -f2-)
+  [ ${#args[@]} -gt 0 ] && gnome-terminal "${args[@]}" &
+fi
+sleep 20
+empty=0
+while true; do
+  pgrep -u "$USER" -x gnome-shell >/dev/null || exit 0
+  out=""
+  pgrep -x code >/dev/null && out+="code"$'\n'
+  pgrep -x nautilus >/dev/null && out+="files"$'\n'
+  for srv in $(pgrep -f gnome-terminal-server); do
+    for b in $(pgrep -P "$srv" -x bash); do
+      out+="term $(readlink /proc/$b/cwd)"$'\n'
+    done
+  done
+  pgrep -u "$USER" -x gnome-shell >/dev/null || exit 0
+  if [ -n "$out" ]; then
+    empty=0
+    printf '%s' "$out" > "$F"
+  else
+    empty=$((empty + 1))
+    [ "$empty" -ge 2 ] && : > "$F"
+  fi
+  sleep 30
+done

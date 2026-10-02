@@ -1,0 +1,6 @@
+{
+  "uuid": "desktop-weather@momen",
+  "name": "Desktop Weather",
+  "description": "Mac-style weather widget on the desktop, click for forecast",
+  "shell-version": ["42"]
+}

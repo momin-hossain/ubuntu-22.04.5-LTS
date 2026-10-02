@@ -1,0 +1,10 @@
+#!/bin/bash
+# Wait for VS Code windows, then maximize them
+for i in $(seq 1 60); do
+  ids=$(wmctrl -lx | awk 'tolower($3) ~ /code\.code/ {print $1}')
+  [ -n "$ids" ] && break; sleep 0.5
+done
+sleep 1.5
+for w in $(wmctrl -lx | awk 'tolower($3) ~ /code\.code/ {print $1}'); do
+  wmctrl -i -r $w -b add,maximized_vert,maximized_horz
+done

@@ -1,0 +1,1 @@
+momen ALL=(root) NOPASSWD: /opt/lampp/lampp startapache, /opt/lampp/lampp stopapache, /opt/lampp/lampp startmysql, /opt/lampp/lampp stopmysql

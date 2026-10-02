@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Lock Screen
+Comment=Choose the lock screen background picture
+Icon=preferences-desktop-screensaver
+Exec=/home/momen/.local/bin/lockscreen-settings
+Categories=Settings;
+Keywords=lock;screen;background;wallpaper;

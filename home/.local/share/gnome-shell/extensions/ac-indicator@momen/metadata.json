@@ -1,0 +1,6 @@
+{
+  "uuid": "ac-indicator@momen",
+  "name": "AC Indicator",
+  "description": "Shows a plug icon in the top bar when the charger is connected",
+  "shell-version": ["42"]
+}

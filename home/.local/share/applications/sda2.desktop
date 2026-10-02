@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Projects (D:)
+Icon=folder-documents
+Exec=/home/momen/.local/bin/open-sda2

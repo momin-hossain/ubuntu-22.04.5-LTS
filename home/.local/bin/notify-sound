@@ -1,0 +1,13 @@
+#!/bin/bash
+exec 9>/tmp/notify-sound.lock; flock -n 9 || exit 0
+SOUND=/usr/share/sounds/Yaru/stereo/message-new-instant.oga
+dbus-monitor --session "interface='org.freedesktop.Notifications',member='Notify'" 2>/dev/null |
+while read -r line; do
+  if [[ $line == *"member=Notify"* ]]; then want=1; continue; fi
+  if [ "$want" = 1 ] && [[ $line == string* ]]; then
+    want=0
+    app=${line#string \"}; app=${app%\"}
+    [ "$app" = "Charger" ] && continue
+    paplay "$SOUND" &
+  fi
+done

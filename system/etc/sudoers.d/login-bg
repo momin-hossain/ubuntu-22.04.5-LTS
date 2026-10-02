@@ -1,0 +1,1 @@
+momen ALL=(root) NOPASSWD: /usr/local/sbin/set-login-bg /home/momen/Pictures/lockscreen.jpg

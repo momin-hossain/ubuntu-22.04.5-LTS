@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=Notification Sound
+Exec=/home/momen/.local/bin/notify-sound

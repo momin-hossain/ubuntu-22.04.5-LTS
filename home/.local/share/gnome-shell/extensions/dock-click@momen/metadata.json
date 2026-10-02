@@ -1,0 +1,6 @@
+{
+  "uuid": "dock-click@momen",
+  "name": "Dock Click Minimize",
+  "description": "Single-window app in front minimizes on dock click; multi-window apps keep cycling",
+  "shell-version": ["42"]
+}

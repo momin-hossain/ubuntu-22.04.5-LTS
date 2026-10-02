@@ -1,0 +1,31 @@
+.notification-banner {
+  width: 22em;
+  min-height: 0;
+  margin: 8px 10px 0 0;
+  background-color: rgba(40, 40, 48, 0.55);
+  background-gradient-direction: vertical;
+  background-gradient-start: rgba(255, 255, 255, 0.10);
+  background-gradient-end: rgba(20, 20, 26, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.40);
+}
+.notification-banner:hover {
+  background-color: rgba(50, 50, 58, 0.65);
+  background-gradient-start: rgba(255, 255, 255, 0.14);
+  background-gradient-end: rgba(26, 26, 32, 0.65);
+}
+.notification-banner .message-content {
+  padding: 8px 10px;
+  spacing: 4px;
+}
+.notification-banner .message-title {
+  font-size: 0.95em;
+}
+.notification-banner .message-body {
+  font-size: 0.88em;
+}
+.notification-banner .message-icon-bin > StIcon {
+  icon-size: 28px;
+}
+

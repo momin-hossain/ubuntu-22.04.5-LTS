@@ -1,0 +1,3 @@
+#!/bin/bash
+rm -f ~/.config/lockscreen-fixed
+notify-send -i preferences-desktop-wallpaper "Lock screen" "Random picture each time"

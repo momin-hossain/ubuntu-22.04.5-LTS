@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=Session Keeper
+Exec=/home/momen/.local/bin/session-keeper

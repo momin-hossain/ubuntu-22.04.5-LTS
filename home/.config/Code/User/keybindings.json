@@ -1,0 +1,3 @@
+[
+  { "key": "ctrl+v", "command": "workbench.action.terminal.paste", "when": "terminalFocus" }
+]

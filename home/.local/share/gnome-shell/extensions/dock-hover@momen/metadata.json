@@ -1,0 +1,6 @@
+{
+  "uuid": "dock-hover@momen",
+  "name": "Dock Hover Lift",
+  "description": "Subtle mac-style lift and zoom on dock hover without changing dock size",
+  "shell-version": ["42"]
+}

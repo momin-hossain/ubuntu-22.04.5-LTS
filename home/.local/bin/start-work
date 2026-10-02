@@ -1,0 +1,8 @@
+#!/bin/bash
+if ! pgrep -x chrome >/dev/null; then
+  google-chrome >/dev/null 2>&1 &
+fi
+code >/dev/null 2>&1 &
+~/.local/bin/max-code >/dev/null 2>&1 &
+pgrep -f "/opt/lampp/bin/[h]ttpd" >/dev/null || sudo -n /opt/lampp/lampp startapache >/dev/null 2>&1 &
+pgrep -f "/opt/lampp/sbin/[m]ysqld" >/dev/null || sudo -n /opt/lampp/lampp startmysql >/dev/null 2>&1 &

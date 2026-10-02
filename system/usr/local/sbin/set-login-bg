@@ -1,0 +1,80 @@
+#!/bin/bash
+# Set Ubuntu 22.04 login screen (GDM) background - safe, reversible.
+# Usage: sudo set-login-bg /path/to/image.jpg   |   sudo set-login-bg --reset
+set -e
+[ "$EUID" -eq 0 ] || { echo "Run with sudo"; exit 1; }
+
+NAME=""
+for n in gdm-theme.gresource gdm3-theme.gresource; do
+  update-alternatives --query "$n" >/dev/null 2>&1 && { NAME=$n; break; }
+done
+[ -n "$NAME" ] || { echo "Could not find the login theme setting on this system."; exit 1; }
+LINK=$(update-alternatives --query "$NAME" | awk '/^Link:/{print $2}')
+CUSTOM_DIR=/usr/local/share/gnome-shell/theme/momen-login
+CUSTOM=$CUSTOM_DIR/gnome-shell-theme.gresource
+
+if [ "${1:-}" = "--reset" ]; then
+  update-alternatives --remove "$NAME" "$CUSTOM" >/dev/null 2>&1 || true
+  update-alternatives --auto "$NAME"
+  echo "Login screen reset to Ubuntu default. Restart to see it."
+  exit 0
+fi
+
+IMG="${1:-}"
+[ -f "$IMG" ] || { echo "Usage: sudo set-login-bg /path/to/image.jpg   or   sudo set-login-bg --reset"; exit 1; }
+
+ORIG=$(update-alternatives --list "$NAME" | grep -v "$CUSTOM" | head -1)
+[ -f "$ORIG" ] || { echo "Could not find the original login theme."; exit 1; }
+
+EXT="${IMG##*.}"
+BG=/usr/share/backgrounds/momen-login-bg.$EXT
+install -Dm644 "$IMG" "$BG"
+
+WORK=$(mktemp -d)
+trap 'rm -rf "$WORK"' EXIT
+BASE=/org/gnome/shell/theme
+for r in $(gresource list "$ORIG"); do
+  mkdir -p "$WORK$(dirname "$r")"
+  gresource extract "$ORIG" "$r" > "$WORK$r"
+done
+SRC="$WORK$BASE"
+[ -d "$SRC" ] || { echo "Unexpected theme layout - nothing changed."; exit 1; }
+
+for css in "$SRC"/*.css; do
+  [ -f "$css" ] || continue
+  cat >> "$css" << CSS
+
+/* momen login background */
+#lockDialogGroup {
+  background: #1e1e1e url(file://$BG);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+/* momen: no colored box behind user name */
+.login-dialog-user-list .login-dialog-user-list-item:selected,
+.login-dialog-user-list .login-dialog-user-list-item:focus,
+.login-dialog-user-list:expanded .login-dialog-user-list-item:selected,
+.login-dialog-user-list:expanded .login-dialog-user-list-item:focus {
+  background-color: transparent;
+  color: #ffffff;
+}
+.login-dialog-user-list .login-dialog-user-list-item:hover {
+  background-color: rgba(255,255,255,0.10);
+}
+CSS
+done
+
+{
+  echo '<?xml version="1.0" encoding="UTF-8"?>'
+  echo "<gresources><gresource prefix=\"$BASE\">"
+  for r in $(gresource list "$ORIG"); do echo "<file>${r#$BASE/}</file>"; done
+  echo '</gresource></gresources>'
+} > "$SRC/momen.gresource.xml"
+
+mkdir -p "$CUSTOM_DIR"
+glib-compile-resources --sourcedir="$SRC" --target="$CUSTOM" "$SRC/momen.gresource.xml"
+update-alternatives --install "$LINK" "$NAME" "$CUSTOM" 0 >/dev/null
+update-alternatives --set "$NAME" "$CUSTOM"
+echo "Login screen background set to $(basename "$IMG"). Restart to see it."
+echo "To undo: sudo set-login-bg --reset"

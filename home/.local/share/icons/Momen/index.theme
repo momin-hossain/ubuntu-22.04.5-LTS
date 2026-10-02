@@ -1,0 +1,11 @@
+[Icon Theme]
+Name=Momen
+Inherits=Yaru,Adwaita,hicolor
+Directories=status
+
+[status]
+Size=16
+MinSize=8
+MaxSize=512
+Type=Scalable
+Context=Status

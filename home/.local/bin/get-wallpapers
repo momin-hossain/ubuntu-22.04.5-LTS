@@ -1,0 +1,15 @@
+#!/bin/bash
+# Resumable wallpaper downloader - skips files already downloaded
+D=/mnt/E/Wallpaper; mkdir -p "$D"; cd "$D" || exit 1
+PAGES=${PAGES:-3}
+for q in dark car coding developer life abstract motivational nature space city minimal mountains landscape; do
+  for p in $(seq 1 $PAGES); do
+    curl -s "https://wallhaven.cc/api/v1/search?q=$q&categories=100&purity=100&atleast=1920x1080&ratios=16x9&sorting=toplist&page=$p" |
+    jq -r '.data[]?.path' | while read -r u; do
+      f=$(basename "$u"); [ -s "$f" ] && continue
+      curl -sfL --retry 3 -o "$f.part" "$u" && mv "$f.part" "$f" && echo "OK  $q  $f"
+      sleep 1.5
+    done
+  done
+done
+rm -f *.part; echo "Done: $(ls | wc -l) wallpapers in $D"

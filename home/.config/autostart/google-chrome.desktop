@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Google Chrome
+Exec=google-chrome
+X-GNOME-Autostart-enabled=true

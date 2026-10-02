@@ -1,0 +1,6 @@
+{
+  "uuid": "auto-maximize@momen",
+  "name": "Auto Maximize VS Code",
+  "description": "Maximizes VS Code windows when they open",
+  "shell-version": ["42"]
+}

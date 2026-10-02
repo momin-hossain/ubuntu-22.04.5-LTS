@@ -1,0 +1,10 @@
+anthropic.claude-code
+bradlc.vscode-tailwindcss
+burkeholland.simple-react-snippets
+christian-kohler.npm-intellisense
+christian-kohler.path-intellisense
+dsznajder.es7-react-js-snippets
+eamodio.gitlens
+esbenp.prettier-vscode
+jasonnutter.search-node-modules
+xabikos.javascriptsnippets

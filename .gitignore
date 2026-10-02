@@ -1,0 +1,6 @@
+*.zip
+*.bak
+*.part
+.ssh/
+*.pem
+*.key

@@ -1,0 +1,6 @@
+{
+  "uuid": "netspeed@momen",
+  "name": "Net Speed",
+  "description": "Shows current download and upload speed in the top bar",
+  "shell-version": ["42"]
+}

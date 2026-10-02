@@ -1,0 +1,6 @@
+{
+  "uuid": "screenshot-button@momen",
+  "name": "Screenshot Button",
+  "description": "Camera icon: select an area, then annotate in ksnip",
+  "shell-version": ["42"]
+}

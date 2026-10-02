@@ -1,0 +1,8 @@
+[user]
+	name = Md Momin Hossain
+	email = 139069345+momin-hossain@users.noreply.github.com
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[core]
+	autocrlf = input
+	fileMode = false

@@ -1,0 +1,14 @@
+#!/bin/bash
+choice=$(zenity --list --title="Lock Screen" --text="Lock screen background" \
+  --column="Option" "Choose picture…" "Random picture each time" --height=220 --width=320) || exit 0
+case "$choice" in
+  "Choose picture…")
+    start=/mnt/E/Wallpaper; [ -d "$start" ] || start=~/Pictures/Lockscreen
+    f=$(zenity --file-selection --title="Choose lock screen picture" --filename="$start/" \
+        --file-filter="Images | *.jpg *.jpeg *.png *.webp") || exit 0
+    cp "$f" ~/Pictures/lockscreen.jpg && touch ~/.config/lockscreen-fixed && sudo -n /usr/local/sbin/set-login-bg /home/momen/Pictures/lockscreen.jpg >/dev/null 2>&1 &
+    notify-send -i preferences-desktop-wallpaper "Lock screen" "Set to $(basename "$f")" ;;
+  "Random picture each time")
+    rm -f ~/.config/lockscreen-fixed
+    notify-send -i preferences-desktop-wallpaper "Lock screen" "Random picture each time" ;;
+esac
