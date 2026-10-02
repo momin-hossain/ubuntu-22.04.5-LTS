@@ -123,3 +123,4 @@ export NVM_DIR="$HOME/.nvm"
 alias xon='sudo /opt/lampp/lampp start'
 alias xoff='sudo /opt/lampp/lampp stop'
 alias ubackup='cd /mnt/D/Projects/Personal/ubuntu-22.04.5-LTS && ./backup.sh && git add -A && git commit -m "update $(date +%F)" && git push; cd - >/dev/null'
+alias bton='rfkill unblock bluetooth'; alias btoff='rfkill block bluetooth'
