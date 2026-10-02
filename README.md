@@ -7,8 +7,8 @@ saved so a fresh install can be rebuilt with one command.
 
 ```bash
 sudo apt install -y git
-git clone git@github.com:momin-hossain/ubuntu-setup.git    # or the https URL
-cd ubuntu-setup
+git clone git@github.com:momin-hossain/ubuntu-22.04.5-LTS.git    # or the https URL
+cd ubuntu-22.04.5-LTS
 ./install.sh          # everything  (or: ./install.sh apps | home | system)
 ```
 Then **restart**. The extensions switch on at the first login.
@@ -16,7 +16,7 @@ Then **restart**. The extensions switch on at the first login.
 ## Save changes (after tweaking something)
 
 ```bash
-cd /mnt/D/Projects/Personal/ubuntu-setup
+cd /mnt/D/Projects/Personal/ubuntu-22.04.5-LTS
 ./backup.sh
 git add -A && git commit -m "backup $(date +%F)" && git push
 ```

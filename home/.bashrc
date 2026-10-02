@@ -122,3 +122,4 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 alias xon='sudo /opt/lampp/lampp start'
 alias xoff='sudo /opt/lampp/lampp stop'
+alias ubackup='cd /mnt/D/Projects/Personal/ubuntu-22.04.5-LTS && ./backup.sh && git add -A && git commit -m "update $(date +%F)" && git push; cd - >/dev/null'
