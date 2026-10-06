@@ -4,7 +4,7 @@ pick() {
   [ -f ~/.config/lockscreen-fixed ] && return
   src=/mnt/E/Wallpaper; [ -d "$src" ] || src=~/Pictures/Lockscreen
   f=$(find "$src" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.png' \) | shuf -n1)
-  [ -n "$f" ] && cp "$f" ~/Pictures/lockscreen.jpg && sudo -n /usr/local/sbin/set-login-bg /home/momen/Pictures/lockscreen.jpg >/dev/null 2>&1 &
+  [ -n "$f" ] && cp "$f" ~/Pictures/lockscreen.jpg && $HOME/.local/bin/lock-apply && sudo -n /usr/local/sbin/set-login-bg /home/momen/Pictures/lockscreen.jpg >/dev/null 2>&1 &
 }
 pick
 dbus-monitor --session "type='signal',interface='org.gnome.ScreenSaver',member='ActiveChanged'" 2>/dev/null |

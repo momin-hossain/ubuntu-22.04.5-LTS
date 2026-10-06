@@ -75,4 +75,5 @@ ubuntu-wallpapers-impish
 ubuntu-wallpapers-jammy
 wget
 wmctrl
+yad
 zlib1g-dev

@@ -15,7 +15,7 @@ apply_mode() {
     powerprofilesctl set balanced 2>/dev/null
   else
     gsettings set org.gnome.desktop.interface clock-show-seconds false
-    powerprofilesctl set power-saver 2>/dev/null
+    powerprofilesctl set balanced 2>/dev/null
   fi
 }
 notified=$(ac_state)

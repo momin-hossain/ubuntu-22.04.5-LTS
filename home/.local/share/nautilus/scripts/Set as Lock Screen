@@ -1,5 +1,5 @@
 #!/bin/bash
 f=$(printf '%s' "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" | head -1)
 [ -f "$f" ] || exit 0
-cp "$f" ~/Pictures/lockscreen.jpg && touch ~/.config/lockscreen-fixed && sudo -n /usr/local/sbin/set-login-bg /home/momen/Pictures/lockscreen.jpg >/dev/null 2>&1 &
+cp "$f" ~/Pictures/lockscreen.jpg && touch ~/.config/lockscreen-fixed && $HOME/.local/bin/lock-apply && sudo -n /usr/local/sbin/set-login-bg /home/momen/Pictures/lockscreen.jpg >/dev/null 2>&1 &
 notify-send -i preferences-desktop-wallpaper "Lock screen" "Set to $(basename "$f")"

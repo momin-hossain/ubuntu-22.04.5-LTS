@@ -5,5 +5,8 @@
   "explorer.confirmDelete": false,
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "git.enableSmartCommit": true,
+  "claudeCode.preferredLocation": "panel",
+  "git.confirmSync": false
 }

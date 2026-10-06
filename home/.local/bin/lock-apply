@@ -1,0 +1,11 @@
+#!/bin/bash
+# Show ~/Pictures/lockscreen.jpg on the lock screen (separate from desktop wallpaper)
+S=~/.local/share/gnome-shell/extensions/lockscreen-extension@pratap.fastmail.fm/schemas
+C=org.gnome.shell.extensions.lockscreen-extension
+D=~/.cache/lockbg; mkdir -p "$D"; rm -f "$D"/*
+f="$D/lock-$(date +%s%N).jpg"; cp ~/Pictures/lockscreen.jpg "$f" || exit 1
+g() { gsettings --schemadir "$S" set $C "$@"; }
+g user-background-1 false
+g background-image-path-1 "file://$f"
+g background-size-1 cover
+g blur-radius-1 0
