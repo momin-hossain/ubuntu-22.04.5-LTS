@@ -32,6 +32,7 @@ cp_home .local/share/nautilus/scripts
 cp_home .config/nautilus/scripts-accels
 cp_home .local/share/icons/Momen
 cp_home .config/autostart
+cp_home .config/systemd/user
 cp_home .config/gtk-3.0/gtk.css
 cp_home .config/gtk-3.0/bookmarks
 cp_home .config/Code/User/settings.json

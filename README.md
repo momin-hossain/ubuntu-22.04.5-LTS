@@ -10,7 +10,7 @@ Everything is saved here so a fresh install can be rebuilt with one command.
 | Task | Command |
 |---|---|
 | Save my current setup to GitHub (after any change) | `ubackup` |
-| Same thing, long form | `cd /mnt/D/Projects/Personal/ubuntu-22.04.5-LTS && ./backup.sh && git add -A && git commit -m "update" && git push` |
+| Same thing, long form | `cd ~/Projects/Personal/ubuntu-22.04.5-LTS && ./backup.sh && git add -A && git commit -m "update" && git push` |
 | Rebuild everything on a fresh Ubuntu 22.04 | `git clone https://github.com/momin-hossain/ubuntu-22.04.5-LTS.git && cd ubuntu-22.04.5-LTS && ./install.sh` then **restart** |
 | Only apps (Chrome, VS Code, XAMPP, Node, Git) | `./install.sh apps` |
 | Only my files, extensions, settings | `./install.sh home` |

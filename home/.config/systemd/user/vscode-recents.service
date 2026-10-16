@@ -1,0 +1,5 @@
+[Unit]
+Description=VS Code recent folders in dock menu
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/vscode-recents
