@@ -1,0 +1,8 @@
+#!/bin/bash
+# Monthly disk cleanup - safe: only removes leftovers and caches
+echo "Before: $(df -h / | awk 'NR==2{print $4}') free"
+sudo apt-get autoremove -y >/dev/null && sudo apt-get clean
+sudo journalctl --vacuum-time=14d >/dev/null 2>&1
+rm -rf ~/.cache/thumbnails/* ~/.cache/lockbg/*.old 2>/dev/null
+snap list --all 2>/dev/null | awk '/disabled/{print $1, $3}' | while read n r; do sudo snap remove "$n" --revision="$r" >/dev/null 2>&1; done
+echo "After:  $(df -h / | awk 'NR==2{print $4}') free"

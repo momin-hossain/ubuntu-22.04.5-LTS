@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+"""Add VS Code's recent folders to the dock right-click menu (GNOME jump list)."""
+import json, os, sqlite3, urllib.parse, re
+
+HOME = os.path.expanduser("~")
+DB = f"{HOME}/.config/Code/User/globalStorage/state.vscdb"
+def find_src():
+    for n in ("com.microsoft.VSCode.desktop", "code.desktop"):
+        p = "/usr/share/applications/" + n
+        if os.path.exists(p):
+            return p
+    return "/usr/share/applications/code.desktop"
+SRC = find_src()
+OUT = f"{HOME}/.local/share/applications/" + os.path.basename(SRC)
+WS = f"{HOME}/.config/Code/User/workspaceStorage"
+MAX = 5
+# old copies on D that now live on the SSD - don't offer them
+SKIP = re.compile(r"^/mnt/D/Projects/Company/(Atysan|Ejazah|KatsanaTech|Xetriva|Zayro)(/|$)")
+
+def uri_to_path(uri):
+    if not uri or not uri.startswith("file://"):
+        return None
+    return urllib.parse.unquote(urllib.parse.urlparse(uri).path)
+
+def from_history():
+    try:
+        con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True, timeout=2)
+        row = con.execute("SELECT value FROM ItemTable WHERE key='history.recentlyOpenedPathsList'").fetchone()
+        con.close()
+    except Exception:
+        return []
+    if not row:
+        return []
+    out = []
+    for e in json.loads(row[0]).get("entries", []):
+        out.append(uri_to_path(e.get("folderUri") or (e.get("workspace") or {}).get("configPath")))
+    return out
+
+def from_workspace_storage():
+    # every folder VS Code opened has a workspaceStorage/<id>/workspace.json; newest = most recently used
+    items = []
+    try:
+        for d in os.listdir(WS):
+            wj = os.path.join(WS, d, "workspace.json")
+            try:
+                info = json.load(open(wj))
+            except Exception:
+                continue
+            p = uri_to_path(info.get("folder") or info.get("workspace") or info.get("configuration"))
+            if p:
+                items.append((os.path.getmtime(os.path.join(WS, d)), p))
+    except Exception:
+        return []
+    return [p for _, p in sorted(items, reverse=True)]
+
+def recents():
+    out, seen = [], set()
+    for path in from_history() + from_workspace_storage():
+        if not path or path in seen or SKIP.match(path) or not os.path.exists(path):
+            continue
+        seen.add(path); out.append(path)
+        if len(out) >= MAX:
+            break
+    return out
+
+def q(s):  # quote an argument for a .desktop Exec line
+    s = s.replace("\\", "\\\\").replace('"', '\\"').replace("`", "\\`").replace("$", "\\$")
+    s = '"' + s.replace("%", "%%") + '"'
+    return s.replace("\\", "\\\\")  # .desktop string level: escape backslashes again
+
+def main():
+    if not os.path.exists(SRC):
+        return
+    base = open(SRC).read()
+    head, _, rest = base.partition("\n[Desktop Action")
+    rest = ("\n[Desktop Action" + rest) if rest else ""
+    paths = recents()
+    ids = [f"recent{i}" for i in range(len(paths))]
+    m = re.search(r"^Actions=(.*)$", head, re.M)
+    orig = [a for a in (m.group(1).split(";") if m else []) if a]
+    actions = ";".join(ids + orig) + ";"
+    head = re.sub(r"^Actions=.*$", "Actions=" + actions, head, flags=re.M) if m else head.rstrip("\n") + "\nActions=" + actions + "\n"
+    blocks = ""
+    for i, p in zip(ids, paths):
+        name = os.path.basename(p.rstrip("/")) or p
+        if name.endswith(".code-workspace"):
+            name = name[:-15] + " (workspace)"
+        parent = os.path.basename(os.path.dirname(p.rstrip("/")))
+        label = f"{name}  —  {parent}" if parent else name
+        blocks += f"\n[Desktop Action {i}]\nName={label}\nExec=/usr/bin/code {q(p)}\n"
+    new = head.rstrip("\n") + "\n" + blocks + rest
+    if not new.endswith("\n"):
+        new += "\n"
+    old = open(OUT).read() if os.path.exists(OUT) else ""
+    if new != old:  # only rewrite when something changed
+        os.makedirs(os.path.dirname(OUT), exist_ok=True)
+        tmp = OUT + ".tmp"
+        open(tmp, "w").write(new); os.replace(tmp, OUT)
+
+if __name__ == "__main__":
+    main()

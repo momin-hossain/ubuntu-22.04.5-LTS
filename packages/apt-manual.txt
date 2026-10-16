@@ -2,6 +2,7 @@ apt-transport-https
 base-passwd
 bsdutils
 build-essential
+ca-certificates
 code
 curl
 dash
@@ -19,6 +20,7 @@ gir1.2-gsound-1.0
 gnome-screenshot
 gnome-session-canberra
 gnome-shell-extension-manager
+gnupg
 google-chrome-stable
 gpg
 grep
@@ -36,6 +38,7 @@ ibus-avro
 imagemagick
 init
 inotify-tools
+iotop
 jq
 ksnip
 language-pack-en
@@ -59,9 +62,12 @@ ncurses-base
 ncurses-bin
 net-tools
 os-prober
+pgadmin4-desktop
 plank
+postgresql
 seahorse
 shim-signed
+sysstat
 ubuntu-desktop
 ubuntu-desktop-minimal
 ubuntu-minimal
@@ -77,3 +83,4 @@ wget
 wmctrl
 yad
 zlib1g-dev
+zram-tools

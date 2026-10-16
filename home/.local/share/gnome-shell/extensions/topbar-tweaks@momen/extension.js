@@ -2,7 +2,7 @@ const { GLib, St } = imports.gi;
 const Main = imports.ui.main;
 
 // Left-to-right order at the start of the right side of the top bar
-const ORDER = ['netspeed@momen', 'screenshot-button@momen', 'dev-services@momen', 'keyboard'];
+const ORDER = ['netspeed@momen', 'screenshot-button@momen', 'dev-services@momen', 'keyboard', 'earbuds@momen'];
 const ITEM_STYLE = '-natural-hpadding: 8px; -minimum-hpadding: 8px;';
 const INNER_STYLE = 'padding: 0; margin: 0;';
 const SPEED_STYLE = 'padding: 0; margin: 0; font-feature-settings: "tnum"; min-width: 5.6em; text-align: center;';

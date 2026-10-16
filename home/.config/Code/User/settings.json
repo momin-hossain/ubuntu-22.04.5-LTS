@@ -8,5 +8,10 @@
   },
   "git.enableSmartCommit": true,
   "claudeCode.preferredLocation": "panel",
-  "git.confirmSync": false
+  "git.confirmSync": false,
+  "security.workspace.trust.untrustedFiles": "open",
+  "editor.cursorBlinking": "expand",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true
 }
