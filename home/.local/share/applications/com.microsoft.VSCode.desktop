@@ -17,12 +17,12 @@ Name=crmKatsana  —  KatsanaTech
 Exec=/usr/bin/code "/home/momen/Projects/Company/KatsanaTech/crmKatsana"
 
 [Desktop Action recent1]
-Name=crm-katsana-react  —  crmKatsana
-Exec=/usr/bin/code "/home/momen/Projects/Company/KatsanaTech/crmKatsana/crm-katsana-react"
-
-[Desktop Action recent2]
 Name=investment  —  Atysan
 Exec=/usr/bin/code "/home/momen/Projects/Company/Atysan/investment"
+
+[Desktop Action recent2]
+Name=crm-katsana-react  —  crmKatsana
+Exec=/usr/bin/code "/home/momen/Projects/Company/KatsanaTech/crmKatsana/crm-katsana-react"
 
 [Desktop Action recent3]
 Name=ejazah-frontend  —  Ejazah

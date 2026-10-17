@@ -1,11 +1,18 @@
-const { Clutter } = imports.gi;
+const { Clutter, GLib } = imports.gi;
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 
+const HIDE_AFTER = 6;   // seconds a notification stays on screen
+
 let origShow = null;
 let origAlign = null;
+let hideTimer = 0;
 
 function init() {}
+
+function clearTimer() {
+  if (hideTimer) { GLib.source_remove(hideTimer); hideTimer = 0; }
+}
 
 function enable() {
   const bin = Main.messageTray._bannerBin;
@@ -23,10 +30,23 @@ function enable() {
     } catch (e) {
       log(`notif-style: ${e}`);
     }
+    // auto-hide after HIDE_AFTER seconds (waits while the pointer is on it)
+    clearTimer();
+    const tray = this, shown = this._notification;
+    hideTimer = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, HIDE_AFTER, () => {
+      if (tray._notification !== shown) { hideTimer = 0; return GLib.SOURCE_REMOVE; }
+      if (tray._pointerInNotification || (tray._banner && tray._banner.focused))
+        return GLib.SOURCE_CONTINUE;   // check again shortly
+      tray._notificationExpired = true;
+      tray._updateState();
+      hideTimer = 0;
+      return GLib.SOURCE_REMOVE;
+    });
   };
 }
 
 function disable() {
+  clearTimer();
   const bin = Main.messageTray._bannerBin;
   if (origAlign !== null) bin.x_align = origAlign;
   bin.translation_x = 0;

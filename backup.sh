@@ -37,6 +37,7 @@ cp_home .config/gtk-3.0/gtk.css
 cp_home .config/gtk-3.0/bookmarks
 cp_home .config/Code/User/settings.json
 cp_home .config/Code/User/keybindings.json
+cp_home .vscode/argv.json
 cp_home .bashrc
 cp_home .profile
 cp_home .gitconfig
