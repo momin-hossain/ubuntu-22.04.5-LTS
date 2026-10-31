@@ -21,16 +21,16 @@ Name=investment  —  Atysan
 Exec=/usr/bin/code "/home/momen/Projects/Company/Atysan/investment"
 
 [Desktop Action recent2]
+Name=unnayan-sangstha  —  Atysan
+Exec=/usr/bin/code "/home/momen/Projects/Company/Atysan/unnayan-sangstha"
+
+[Desktop Action recent3]
 Name=crm-katsana-react  —  crmKatsana
 Exec=/usr/bin/code "/home/momen/Projects/Company/KatsanaTech/crmKatsana/crm-katsana-react"
 
-[Desktop Action recent3]
+[Desktop Action recent4]
 Name=ejazah-frontend  —  Ejazah
 Exec=/usr/bin/code "/home/momen/Projects/Company/Ejazah/ejazah-frontend"
-
-[Desktop Action recent4]
-Name=b2c-ejazah-frontend  —  Ejazah
-Exec=/usr/bin/code "/home/momen/Projects/Company/Ejazah/b2c-ejazah-frontend"
 
 [Desktop Action new-empty-window]
 Name=New Empty Window

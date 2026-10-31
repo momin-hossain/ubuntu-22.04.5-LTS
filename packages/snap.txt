@@ -7,6 +7,7 @@ gnome-46-2404
 gtk-common-themes
 icon-theme-papirus
 kf6-core24
+localsend
 mesa-2404
 snap-store
 snapd

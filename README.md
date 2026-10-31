@@ -44,7 +44,7 @@ Menus open on **click only**, not on mouse hover.
 | **Super+M** | Notification list |
 | **Super+Space** | English ↔ Banglish |
 | **Super+L** | Lock screen |
-| **Alt+Tab** | Coverflow window switcher |
+| **Alt+Tab** | Window switcher (Ubuntu built-in; Coverflow extension is off) |
 | **F4** (in Files) | Open terminal in that folder |
 
 ### Dock
