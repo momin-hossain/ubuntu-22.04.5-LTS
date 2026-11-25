@@ -105,6 +105,9 @@ step "GNOME settings (dock, top bar, shortcuts, keyboard, extensions)"
 [ -f "$R/dconf/ibus.ini" ]  && dconf load /desktop/ibus/ < "$R/dconf/ibus.ini" && echo "  + ibus (Banglish)"
 [ -f "$R/dconf/gtk.ini" ]   && dconf load /org/gtk/ < "$R/dconf/gtk.ini" && echo "  + gtk"
 
+step "Speed: file indexer (Tracker) off"
+systemctl --user mask --now tracker-miner-fs-3.service tracker-extract-3.service >/dev/null 2>&1 && echo "  + tracker masked"
+
 step "Clock format (24 Sep 11:21:45 PM)"
 sudo locale-gen en_GB.UTF-8 >/dev/null && sudo update-locale LC_TIME=en_GB.UTF-8
 fi
@@ -157,6 +160,26 @@ fi
 step "Bluetooth + session settings"
 put /etc/bluetooth/main.conf && sudo systemctl restart bluetooth
 put /etc/systemd/logind.conf
+
+step "Speed: NVIDIA card off, no auto-updates"
+# HP laptop has Intel HD 620 (drives the screen) + NVIDIA 930MX. The nouveau driver
+# kept waking the NVIDIA card -> stutters. Block it and let the card power down.
+# (nvidia-driver-470 does NOT build on kernel 6.8 here - don't install it.)
+if lspci | grep -qi nvidia; then
+  put /etc/modprobe.d/blacklist-nouveau.conf
+  put /etc/udev/rules.d/80-nvidia-pm.rules && sudo udevadm control --reload
+  echo "  updating boot image..."; sudo update-initramfs -u >/dev/null 2>&1
+fi
+sudo systemctl disable --now apt-daily.timer apt-daily-upgrade.timer fwupd-refresh.timer \
+  update-notifier-download.timer update-notifier-motd.timer 2>/dev/null; echo "  + apt/firmware auto-update timers off"
+sudo snap refresh --hold >/dev/null 2>&1 && echo "  + snap auto-refresh held"
+sudo tee /etc/apt/apt.conf.d/20auto-upgrades >/dev/null <<'EOF'
+APT::Periodic::Update-Package-Lists "0";
+APT::Periodic::Download-Upgradeable-Packages "0";
+APT::Periodic::AutocleanInterval "0";
+APT::Periodic::Unattended-Upgrade "0";
+EOF
+echo "  + unattended upgrades off"
 
 step "Password-free buttons (Dev Services, login picture)"
 for f in "$S"/etc/sudoers.d/*; do

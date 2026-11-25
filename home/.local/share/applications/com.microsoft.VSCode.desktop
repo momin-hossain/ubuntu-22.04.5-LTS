@@ -2,7 +2,7 @@
 Name=Visual Studio Code
 Comment=Code Editing. Redefined.
 GenericName=Text Editor
-Exec=/usr/share/code/code %F
+Exec=/usr/share/code/code --ozone-platform=x11 %F
 Icon=vscode
 Type=Application
 StartupNotify=false
@@ -13,24 +13,24 @@ Actions=recent0;recent1;recent2;recent3;recent4;new-empty-window;
 Keywords=vscode;
 
 [Desktop Action recent0]
-Name=crmKatsana  —  KatsanaTech
-Exec=/usr/bin/code "/home/momen/Projects/Company/KatsanaTech/crmKatsana"
+Name=ts - Xetriva
+Exec=/usr/share/code/code --ozone-platform=x11 "/home/momen/Projects/Company/Xetriva/ts"
 
 [Desktop Action recent1]
-Name=investment  —  Atysan
-Exec=/usr/bin/code "/home/momen/Projects/Company/Atysan/investment"
+Name=crmKatsana - KatsanaTech
+Exec=/usr/share/code/code --ozone-platform=x11 "/home/momen/Projects/Company/KatsanaTech/crmKatsana"
 
 [Desktop Action recent2]
-Name=unnayan-sangstha  —  Atysan
-Exec=/usr/bin/code "/home/momen/Projects/Company/Atysan/unnayan-sangstha"
+Name=investment - Atysan
+Exec=/usr/share/code/code --ozone-platform=x11 "/home/momen/Projects/Company/Atysan/investment"
 
 [Desktop Action recent3]
-Name=crm-katsana-react  —  crmKatsana
-Exec=/usr/bin/code "/home/momen/Projects/Company/KatsanaTech/crmKatsana/crm-katsana-react"
+Name=Ejazah - Company
+Exec=/usr/share/code/code --ozone-platform=x11 "/home/momen/Projects/Company/Ejazah"
 
 [Desktop Action recent4]
-Name=ejazah-frontend  —  Ejazah
-Exec=/usr/bin/code "/home/momen/Projects/Company/Ejazah/ejazah-frontend"
+Name=alamanda - KatsanaTech
+Exec=/usr/share/code/code --ozone-platform=x11 "/home/momen/Projects/Company/KatsanaTech/alamanda"
 
 [Desktop Action new-empty-window]
 Name=New Empty Window
@@ -44,5 +44,5 @@ Name[ko]=새 빈 창
 Name[ru]=Новое пустое окно
 Name[zh_CN]=新建空窗口
 Name[zh_TW]=開新空視窗
-Exec=/usr/share/code/code --new-window %F
+Exec=/usr/share/code/code --ozone-platform=x11 --new-window %F
 Icon=vscode

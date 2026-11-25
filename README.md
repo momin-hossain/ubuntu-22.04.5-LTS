@@ -110,8 +110,27 @@ New or changed extensions only load after **log out → log in**.
 | Sidebar shortcuts | `cp ~/.config/gtk-3.0/bookmarks.bak ~/.config/gtk-3.0/bookmarks; nautilus -q` |
 | Paste-on-select (Super+V) | `gnome-extensions disable clip-paste@momen` |
 | VS Code auto full screen | `gnome-extensions disable auto-maximize@momen` |
+| NVIDIA card back on (nouveau) | `sudo rm /etc/modprobe.d/blacklist-nouveau.conf /etc/udev/rules.d/80-nvidia-pm.rules && sudo update-initramfs -u` then restart |
+| Animations back | `gsettings set org.gnome.desktop.interface enable-animations true` |
+| File search inside files (Tracker) | `systemctl --user unmask tracker-miner-fs-3.service tracker-extract-3.service` then log out/in |
+| Auto-updates back | `sudo snap refresh --unhold && sudo systemctl enable --now apt-daily.timer apt-daily-upgrade.timer` |
+| A speed-off widget back | `gnome-extensions enable netspeed@momen` (or `sysmon@momen`, `desktop-clocks@momen`) |
 
 Every system file the install script replaces is backed up next to it as `*.bak`.
+
+---
+
+## Speed tweaks (Nov 2026)
+
+The laptop (i5-7200U, 2 cores) was lagging. Causes and fixes, all applied by `install.sh`:
+
+| Problem | Fix |
+|---|---|
+| `nouveau` driver kept waking the NVIDIA 930MX → stutters, "system is too slow" mouse lag | nouveau blocked (`/etc/modprobe.d/blacklist-nouveau.conf`), card powers down (`/etc/udev/rules.d/80-nvidia-pm.rules`). Screen runs on Intel HD 620. Don't install `nvidia-driver-470`: it fails to build on kernel 6.8. |
+| Too many extensions redrawing every 1-2 s | Off: magic-lamp, Coverflow Alt-Tab, netspeed, sysmon, desktop-clocks |
+| GNOME animations | Off |
+| Background work | File indexer (Tracker), update notifier, Evolution alarm, Ubuntu Pro popups off |
+| Auto-updates | apt / snap / firmware / VS Code auto-updates off. Update by hand: `sudo apt update && sudo apt upgrade` |
 
 ---
 

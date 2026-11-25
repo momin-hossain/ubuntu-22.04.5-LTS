@@ -1,0 +1,6 @@
+{
+  "uuid": "folder-count@momen",
+  "name": "Folder Count",
+  "description": "Shows how many items the folder open in Files has, in the top bar (like Windows' status bar)",
+  "shell-version": ["42"]
+}

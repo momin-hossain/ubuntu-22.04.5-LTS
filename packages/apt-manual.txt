@@ -1,5 +1,6 @@
 apt-transport-https
 base-passwd
+brave-browser
 bsdutils
 build-essential
 ca-certificates
@@ -19,7 +20,6 @@ gir1.2-gda-5.0
 gir1.2-gsound-1.0
 gnome-screenshot
 gnome-session-canberra
-gnome-shell-extension-manager
 gnupg
 google-chrome-stable
 gpg
@@ -61,8 +61,8 @@ mokutil
 ncurses-base
 ncurses-bin
 net-tools
+nvidia-prime
 os-prober
-pgadmin4-desktop
 plank
 postgresql
 seahorse

@@ -14,6 +14,7 @@ SRC = find_src()
 OUT = f"{HOME}/.local/share/applications/" + os.path.basename(SRC)
 WS = f"{HOME}/.config/Code/User/workspaceStorage"
 MAX = 5
+CODE = "/usr/share/code/code --ozone-platform=x11"
 # old copies on D that now live on the SSD - don't offer them
 SKIP = re.compile(r"^/mnt/D/Projects/Company/(Atysan|Ejazah|KatsanaTech|Xetriva|Zayro)(/|$)")
 
@@ -72,6 +73,8 @@ def main():
     if not os.path.exists(SRC):
         return
     base = open(SRC).read()
+    # native Wayland mis-sizes VS Code on GNOME 42, so run it through XWayland
+    base = re.sub(r"^Exec=/usr/share/code/code(?! --ozone-platform)", "Exec=" + CODE, base, flags=re.M)
     head, _, rest = base.partition("\n[Desktop Action")
     rest = ("\n[Desktop Action" + rest) if rest else ""
     paths = recents()
@@ -86,8 +89,8 @@ def main():
         if name.endswith(".code-workspace"):
             name = name[:-15] + " (workspace)"
         parent = os.path.basename(os.path.dirname(p.rstrip("/")))
-        label = f"{name}  —  {parent}" if parent else name
-        blocks += f"\n[Desktop Action {i}]\nName={label}\nExec=/usr/bin/code {q(p)}\n"
+        label = f"{name} - {parent}" if parent else name
+        blocks += f"\n[Desktop Action {i}]\nName={label}\nExec={CODE} {q(p)}\n"
     new = head.rstrip("\n") + "\n" + blocks + rest
     if not new.endswith("\n"):
         new += "\n"

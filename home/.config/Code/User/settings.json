@@ -1,4 +1,6 @@
 {
+  "update.mode": "none",
+  "extensions.autoUpdate": "off",
   "files.autoSave": "afterDelay",
   "editor.wordWrap": "on",
   "window.newWindowDimensions": "maximized",
@@ -17,4 +19,25 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
+  // Speed: don't watch / search generated or huge folders.
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.git/objects/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/uploads/**": true,
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+  },
+  // Speed: GitLens without its always-running parts (blame on every line,
+  // code lens above every function) - its other features still work.
+  "gitlens.currentLine.enabled": false,
+  "gitlens.codeLens.enabled": false,
+  // Speed: no background telemetry / experiments.
+  "telemetry.telemetryLevel": "off",
+  "workbench.enableExperiments": false,
+  "js/ts.updateImportsOnFileMove.enabled": "always",
 }

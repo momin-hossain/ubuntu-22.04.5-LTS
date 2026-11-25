@@ -69,6 +69,8 @@ cp_sys /etc/bluetooth/main.conf
 cp_sys /etc/systemd/logind.conf
 cp_sys /usr/local/sbin/set-login-bg
 cp_sys /usr/share/plymouth/themes/hp-spinner
+cp_sys /etc/modprobe.d/blacklist-nouveau.conf
+cp_sys /etc/udev/rules.d/80-nvidia-pm.rules
 for f in /etc/sudoers.d/*; do
   case "$(basename "$f")" in README) continue;; esac
   cp_sys "$f"
