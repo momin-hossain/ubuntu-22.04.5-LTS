@@ -1,4 +1,8 @@
 #!/bin/bash
+# Charger plugged / unplugged -> sound + notification + clock seconds on AC.
+# Event-driven: waits for the kernel's power_supply event instead of polling
+# every second (old version: ~6 process forks/second all day). A 20 s timeout
+# keeps it correct even if an event is ever missed.
 exec 9>/tmp/charger-notify.lock; flock -n 9 || exit 0
 ac_state() {
   for d in /sys/class/power_supply/*; do
@@ -12,34 +16,25 @@ ac_state() {
 apply_mode() {
   if [ "$1" = "1" ]; then
     gsettings set org.gnome.desktop.interface clock-show-seconds true
-    powerprofilesctl set balanced 2>/dev/null
   else
     gsettings set org.gnome.desktop.interface clock-show-seconds false
-    powerprofilesctl set balanced 2>/dev/null
   fi
+  powerprofilesctl set balanced 2>/dev/null
 }
 notified=$(ac_state)
 apply_mode "$notified"
-candidate=$notified
-stable=0
 while true; do
-  sleep 1
+  read -r -t 20 _      # wake on a power_supply event, or after 20 s anyway
+  sleep 2              # let the plug/unplug settle (same debounce as before)
   now=$(ac_state)
-  if [ "$now" != "$candidate" ]; then
-    candidate=$now
-    stable=0
-    continue
+  [ "$now" = "$notified" ] && continue
+  apply_mode "$now"
+  if [ "$now" = "1" ]; then
+    paplay /usr/share/sounds/Yaru/stereo/device-added.oga &
+    notify-send -a Charger -i battery-full-charging "Charger connected" "Running on AC power"
+  else
+    paplay /usr/share/sounds/Yaru/stereo/device-removed.oga &
+    notify-send -a Charger -i battery-low "Charger disconnected" "Battery saver on"
   fi
-  stable=$((stable + 1))
-  if [ "$stable" -ge 2 ] && [ "$candidate" != "$notified" ]; then
-    apply_mode "$candidate"
-    if [ "$candidate" = "1" ]; then
-      paplay /usr/share/sounds/Yaru/stereo/device-added.oga &
-      notify-send -a Charger -i battery-full-charging "Charger connected" "Running on AC power"
-    else
-      paplay /usr/share/sounds/Yaru/stereo/device-removed.oga &
-      notify-send -a Charger -i battery-low "Charger disconnected" "Battery saver on"
-    fi
-    notified=$candidate
-  fi
-done
+  notified=$now
+done < <(stdbuf -oL udevadm monitor --udev --subsystem-match=power_supply 2>/dev/null)
