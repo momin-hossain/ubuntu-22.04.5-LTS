@@ -6,6 +6,7 @@
 #    ./install.sh apps       only apps (Chrome, VS Code, XAMPP, Node, Git...)
 #    ./install.sh home       only your files, scripts, extensions, settings
 #    ./install.sh system     only system tweaks (disks, boot logo, login screen...)
+#    ./install.sh speed      only speed fixes - safe on any Ubuntu 22.04 PC
 #
 #  When it finishes: RESTART the PC. Extensions switch on at next login.
 #  Made for Ubuntu 22.04 / GNOME 42 only.
@@ -105,9 +106,6 @@ step "GNOME settings (dock, top bar, shortcuts, keyboard, extensions)"
 [ -f "$R/dconf/ibus.ini" ]  && dconf load /desktop/ibus/ < "$R/dconf/ibus.ini" && echo "  + ibus (Banglish)"
 [ -f "$R/dconf/gtk.ini" ]   && dconf load /org/gtk/ < "$R/dconf/gtk.ini" && echo "  + gtk"
 
-step "Speed: file indexer (Tracker) off"
-systemctl --user mask --now tracker-miner-fs-3.service tracker-extract-3.service >/dev/null 2>&1 && echo "  + tracker masked"
-
 step "Clock format (24 Sep 11:21:45 PM)"
 sudo locale-gen en_GB.UTF-8 >/dev/null && sudo update-locale LC_TIME=en_GB.UTF-8
 fi
@@ -161,7 +159,7 @@ step "Bluetooth + session settings"
 put /etc/bluetooth/main.conf && sudo systemctl restart bluetooth
 put /etc/systemd/logind.conf
 
-step "Speed: NVIDIA card off, no auto-updates"
+step "Speed: NVIDIA card off"
 # HP laptop has Intel HD 620 (drives the screen) + NVIDIA 930MX. The nouveau driver
 # kept waking the NVIDIA card -> stutters. Block it and let the card power down.
 # (nvidia-driver-470 does NOT build on kernel 6.8 here - don't install it.)
@@ -170,16 +168,6 @@ if lspci | grep -qi nvidia; then
   put /etc/udev/rules.d/80-nvidia-pm.rules && sudo udevadm control --reload
   echo "  updating boot image..."; sudo update-initramfs -u >/dev/null 2>&1
 fi
-sudo systemctl disable --now apt-daily.timer apt-daily-upgrade.timer fwupd-refresh.timer \
-  update-notifier-download.timer update-notifier-motd.timer 2>/dev/null; echo "  + apt/firmware auto-update timers off"
-sudo snap refresh --hold >/dev/null 2>&1 && echo "  + snap auto-refresh held"
-sudo tee /etc/apt/apt.conf.d/20auto-upgrades >/dev/null <<'EOF'
-APT::Periodic::Update-Package-Lists "0";
-APT::Periodic::Download-Upgradeable-Packages "0";
-APT::Periodic::AutocleanInterval "0";
-APT::Periodic::Unattended-Upgrade "0";
-EOF
-echo "  + unattended upgrades off"
 
 step "Password-free buttons (Dev Services, login picture)"
 for f in "$S"/etc/sudoers.d/*; do
@@ -188,6 +176,44 @@ for f in "$S"/etc/sudoers.d/*; do
     sudo install -m 440 -o root -g root "$f" "/etc/sudoers.d/$(basename "$f")" && echo "  + sudoers $(basename "$f")"
   else echo "  skip $(basename "$f") (invalid)"; fi
 done
+fi
+
+# ---------------------------------------------------------------------
+if want speed; then
+step "Speed: heavy extensions off"
+for e in compiz-alike-magic-lamp-effect@hermes83.github.com CoverflowAltTab@palatis.blogspot.com \
+  netspeed@momen sysmon@momen desktop-clocks@momen; do
+  gnome-extensions disable "$e" 2>/dev/null && echo "  - $e"
+done
+
+step "Speed: keep animations ON (Chrome needs them)"
+# Animations off makes Chrome tell every website "prefers-reduced-motion: reduce",
+# so web animations (framer-motion, CSS) stop. Keep them on.
+gsettings set org.gnome.desktop.interface enable-animations true && echo "  + animations on"
+
+step "Speed: background apps off at login"
+mkdir -p "$HOME/.config/autostart"
+for a in update-notifier org.gnome.Evolution-alarm-notify ubuntu-advantage-notification \
+  tracker-miner-fs-3 ubuntu-report-on-upgrade; do
+  printf '[Desktop Entry]\nType=Application\nName=%s\nHidden=true\n' "$a" > "$HOME/.config/autostart/$a.desktop"
+  echo "  - $a"
+done
+rm -f "$HOME/.config/autostart/geoclue-demo-agent.desktop"
+systemctl --user mask --now tracker-miner-fs-3.service tracker-extract-3.service >/dev/null 2>&1 && echo "  + file indexer (Tracker) masked"
+
+step "Speed: faster boot, no auto-updates"
+sudo systemctl disable NetworkManager-wait-online.service 2>/dev/null; echo "  + NetworkManager-wait-online off"
+sudo systemctl disable --now apt-daily.timer apt-daily-upgrade.timer fwupd-refresh.timer \
+  update-notifier-download.timer update-notifier-motd.timer 2>/dev/null; echo "  + apt/firmware auto-update timers off"
+sudo snap refresh --hold >/dev/null 2>&1 && echo "  + snap auto-refresh held"
+[ -f /etc/apt/apt.conf.d/20auto-upgrades ] && sudo cp -n /etc/apt/apt.conf.d/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades.bak
+sudo tee /etc/apt/apt.conf.d/20auto-upgrades >/dev/null <<'EOF'
+APT::Periodic::Update-Package-Lists "0";
+APT::Periodic::Download-Upgradeable-Packages "0";
+APT::Periodic::AutocleanInterval "0";
+APT::Periodic::Unattended-Upgrade "0";
+EOF
+echo "  + unattended upgrades off (update by hand: sudo apt update && sudo apt upgrade)"
 fi
 
 echo
