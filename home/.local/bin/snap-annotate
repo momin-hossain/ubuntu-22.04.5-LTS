@@ -1,5 +1,12 @@
 #!/bin/bash
+# Camera button: select an area, then annotate it in ksnip.
+# A stray click (selection under 20 px) is thrown away instead of opening ksnip.
+exec 9>/tmp/snap-annotate.lock; flock -n 9 || exit 0   # one selector at a time
 f="/tmp/shot-$(date +%s).png"
 sleep 0.3
 gnome-screenshot -a -f "$f" || exit 0
-[ -s "$f" ] && ksnip -e "$f"
+[ -s "$f" ] || exit 0
+read -r w h < <(identify -format '%w %h' "$f" 2>/dev/null)
+if [ "${w:-0}" -lt 20 ] || [ "${h:-0}" -lt 20 ]; then rm -f "$f"; exit 0; fi
+exec 9>&-
+ksnip -e "$f"
