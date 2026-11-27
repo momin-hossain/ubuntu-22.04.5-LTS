@@ -14,13 +14,14 @@ ac_state() {
   echo 1
 }
 apply_mode() {
-  if [ "$1" = "1" ]; then   # on charger: full speed (CPU turbo stays responsive)
+  if [ "$1" = "1" ]; then
     gsettings set org.gnome.desktop.interface clock-show-seconds true
-    powerprofilesctl set performance 2>/dev/null
-  else                      # on battery: balanced, saves battery
+  else
     gsettings set org.gnome.desktop.interface clock-show-seconds false
-    powerprofilesctl set balanced 2>/dev/null
   fi
+  # Balanced always: the i5-7200U still turbos to 3.1 GHz under load here;
+  # performance only adds heat/fan (GNOME shows it in red as a warning).
+  powerprofilesctl set balanced 2>/dev/null
 }
 notified=$(ac_state)
 apply_mode "$notified"

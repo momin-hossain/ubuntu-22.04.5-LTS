@@ -114,7 +114,6 @@ New or changed extensions only load after **log out → log in**.
 | NVIDIA card back on (nouveau) | `sudo rm /etc/modprobe.d/blacklist-nouveau.conf /etc/udev/rules.d/80-nvidia-pm.rules && sudo update-initramfs -u` then restart |
 | File search inside files (Tracker) | `systemctl --user unmask tracker-miner-fs-3.service tracker-extract-3.service` then log out/in |
 | Auto-updates fully off | `sudo systemctl disable --now apt-daily.timer apt-daily-upgrade.timer && sudo snap refresh --hold` |
-| Always `balanced` power (cooler, quieter) | change `performance` to `balanced` in `~/.local/bin/charger-notify`, then log out/in |
 | Network printer auto-discovery back | `sudo systemctl enable --now cups-browsed` |
 | A speed-off widget back | `gnome-extensions enable netspeed@momen` (or `sysmon@momen`, `desktop-clocks@momen`) |
 
@@ -136,7 +135,7 @@ On another Ubuntu 22.04 PC run only `./install.sh speed` (the NVIDIA fix runs wi
 | Slow boot (~7 s) | `NetworkManager-wait-online` off; network printer auto-discovery (`cups-browsed`) off |
 | Updates stealing CPU | Security updates (Ubuntu + Chrome) still install automatically, but at the lowest CPU/disk priority. Snaps once a week (Sun 12-14). Firmware checks, update popup and VS Code self-update off. Feature updates by hand: `sudo apt update && sudo apt upgrade` |
 | Slow when memory fills | zram swap reads one page at a time (`vm.page-cluster = 0` in `/etc/sysctl.d/99-zram-speed.conf`) |
-| CPU held back | `charger-notify` switches the power profile: **performance** on charger, **balanced** on battery. It now waits for plug/unplug events instead of checking every second. (Installed with `home`, not `speed`.) |
+| Power profile | **Balanced** always (set by `charger-notify`): the CPU still turbos to 3.1 GHz under load; Performance only adds heat and fan noise (GNOME shows it in red as a warning). It now waits for plug/unplug events instead of checking every second. (Installed with `home`, not `speed`.) |
 | VS Code drawn by the CPU | `~/.vscode/argv.json` has `"disable-hardware-acceleration": true` (set while nouveau was broken). Try `false` for smoother scrolling; set back to `true` if the screen flickers. |
 
 ---
