@@ -14,12 +14,13 @@ ac_state() {
   echo 1
 }
 apply_mode() {
-  if [ "$1" = "1" ]; then
+  if [ "$1" = "1" ]; then   # on charger: full speed (CPU turbo stays responsive)
     gsettings set org.gnome.desktop.interface clock-show-seconds true
-  else
+    powerprofilesctl set performance 2>/dev/null
+  else                      # on battery: balanced, saves battery
     gsettings set org.gnome.desktop.interface clock-show-seconds false
+    powerprofilesctl set balanced 2>/dev/null
   fi
-  powerprofilesctl set balanced 2>/dev/null
 }
 notified=$(ac_state)
 apply_mode "$notified"
@@ -37,4 +38,5 @@ while true; do
     notify-send -a Charger -i battery-low "Charger disconnected" "Battery saver on"
   fi
   notified=$now
-done < <(stdbuf -oL udevadm monitor --udev --subsystem-match=power_supply 2>/dev/null)
+done < <(exec 9>&-; stdbuf -oL udevadm monitor --udev --subsystem-match=power_supply 2>/dev/null)
+# (9>&- : udevadm must not inherit the lock, or a restart after logout would be blocked)

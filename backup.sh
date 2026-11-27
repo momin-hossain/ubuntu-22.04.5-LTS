@@ -71,6 +71,11 @@ cp_sys /usr/local/sbin/set-login-bg
 cp_sys /usr/share/plymouth/themes/hp-spinner
 cp_sys /etc/modprobe.d/blacklist-nouveau.conf
 cp_sys /etc/udev/rules.d/80-nvidia-pm.rules
+cp_sys /etc/apt/apt.conf.d/20auto-upgrades
+cp_sys /etc/apt/apt.conf.d/51chrome-auto
+cp_sys /etc/systemd/system/apt-daily.service.d
+cp_sys /etc/systemd/system/apt-daily-upgrade.service.d
+cp_sys /etc/sysctl.d/99-zram-speed.conf
 for f in /etc/sudoers.d/*; do
   case "$(basename "$f")" in README) continue;; esac
   cp_sys "$f"

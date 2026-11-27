@@ -113,7 +113,9 @@ New or changed extensions only load after **log out → log in**.
 | VS Code auto full screen | `gnome-extensions disable auto-maximize@momen` |
 | NVIDIA card back on (nouveau) | `sudo rm /etc/modprobe.d/blacklist-nouveau.conf /etc/udev/rules.d/80-nvidia-pm.rules && sudo update-initramfs -u` then restart |
 | File search inside files (Tracker) | `systemctl --user unmask tracker-miner-fs-3.service tracker-extract-3.service` then log out/in |
-| Auto-updates back | `sudo snap refresh --unhold && sudo systemctl enable --now apt-daily.timer apt-daily-upgrade.timer` |
+| Auto-updates fully off | `sudo systemctl disable --now apt-daily.timer apt-daily-upgrade.timer && sudo snap refresh --hold` |
+| Always `balanced` power (cooler, quieter) | change `performance` to `balanced` in `~/.local/bin/charger-notify`, then log out/in |
+| Network printer auto-discovery back | `sudo systemctl enable --now cups-browsed` |
 | A speed-off widget back | `gnome-extensions enable netspeed@momen` (or `sysmon@momen`, `desktop-clocks@momen`) |
 
 Every system file the install script replaces is backed up next to it as `*.bak`.
@@ -131,8 +133,11 @@ On another Ubuntu 22.04 PC run only `./install.sh speed` (the NVIDIA fix runs wi
 | Too many extensions redrawing every 1-2 s | Off: magic-lamp, Coverflow Alt-Tab, netspeed, sysmon, desktop-clocks |
 | GNOME animations | **Kept ON.** Turning them off makes Chrome report `prefers-reduced-motion: reduce` to every website, so web animations stop (bad for web development). |
 | Background work | File indexer (Tracker), update notifier, Evolution alarm, Ubuntu Pro popups off |
-| Slow boot (~7 s) | `NetworkManager-wait-online` off |
-| Auto-updates | apt / snap / firmware / VS Code auto-updates off. Update by hand: `sudo apt update && sudo apt upgrade` |
+| Slow boot (~7 s) | `NetworkManager-wait-online` off; network printer auto-discovery (`cups-browsed`) off |
+| Updates stealing CPU | Security updates (Ubuntu + Chrome) still install automatically, but at the lowest CPU/disk priority. Snaps once a week (Sun 12-14). Firmware checks, update popup and VS Code self-update off. Feature updates by hand: `sudo apt update && sudo apt upgrade` |
+| Slow when memory fills | zram swap reads one page at a time (`vm.page-cluster = 0` in `/etc/sysctl.d/99-zram-speed.conf`) |
+| CPU held back | `charger-notify` switches the power profile: **performance** on charger, **balanced** on battery. It now waits for plug/unplug events instead of checking every second. (Installed with `home`, not `speed`.) |
+| VS Code drawn by the CPU | `~/.vscode/argv.json` has `"disable-hardware-acceleration": true` (set while nouveau was broken). Try `false` for smoother scrolling; set back to `true` if the screen flickers. |
 
 ---
 

@@ -201,19 +201,33 @@ done
 rm -f "$HOME/.config/autostart/geoclue-demo-agent.desktop"
 systemctl --user mask --now tracker-miner-fs-3.service tracker-extract-3.service >/dev/null 2>&1 && echo "  + file indexer (Tracker) masked"
 
-step "Speed: faster boot, no auto-updates"
+step "Speed: faster boot, quiet updates"
 sudo systemctl disable NetworkManager-wait-online.service 2>/dev/null; echo "  + NetworkManager-wait-online off"
-sudo systemctl disable --now apt-daily.timer apt-daily-upgrade.timer fwupd-refresh.timer \
-  update-notifier-download.timer update-notifier-motd.timer 2>/dev/null; echo "  + apt/firmware auto-update timers off"
-sudo snap refresh --hold >/dev/null 2>&1 && echo "  + snap auto-refresh held"
+sudo systemctl disable --now cups-browsed.service 2>/dev/null; echo "  + network printer auto-discovery off (printing still works)"
+# Firmware checks and the update popup stay off. Security updates stay ON but
+# run at the lowest CPU/disk priority, so you never feel them.
+sudo systemctl disable --now fwupd-refresh.timer update-notifier-download.timer update-notifier-motd.timer 2>/dev/null
+echo "  + firmware checks + update popup off"
+sudo systemctl enable --now apt-daily.timer apt-daily-upgrade.timer 2>/dev/null
 [ -f /etc/apt/apt.conf.d/20auto-upgrades ] && sudo cp -n /etc/apt/apt.conf.d/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades.bak
 sudo tee /etc/apt/apt.conf.d/20auto-upgrades >/dev/null <<'EOF'
-APT::Periodic::Update-Package-Lists "0";
+APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Download-Upgradeable-Packages "0";
-APT::Periodic::AutocleanInterval "0";
-APT::Periodic::Unattended-Upgrade "0";
+APT::Periodic::AutocleanInterval "7";
+APT::Periodic::Unattended-Upgrade "1";
 EOF
-echo "  + unattended upgrades off (update by hand: sudo apt update && sudo apt upgrade)"
+# Chrome only updates through apt on Linux: let security auto-updates include it.
+echo 'Unattended-Upgrade::Origins-Pattern { "origin=Google LLC"; };' | sudo tee /etc/apt/apt.conf.d/51chrome-auto >/dev/null
+for s in apt-daily apt-daily-upgrade; do
+  sudo mkdir -p "/etc/systemd/system/$s.service.d"
+  printf '[Service]\nNice=19\nIOSchedulingClass=idle\nCPUWeight=10\n' | sudo tee "/etc/systemd/system/$s.service.d/low-priority.conf" >/dev/null
+done
+sudo systemctl daemon-reload
+echo "  + security updates (Ubuntu + Chrome) automatic, lowest priority"
+sudo snap refresh --unhold >/dev/null 2>&1; sudo snap set system refresh.timer=sun,12:00-14:00 && echo "  + snaps update once a week (Sun 12-14)"
+
+step "Speed: faster compressed swap (zram)"
+echo 'vm.page-cluster = 0' | sudo tee /etc/sysctl.d/99-zram-speed.conf >/dev/null && sudo sysctl -q -p /etc/sysctl.d/99-zram-speed.conf && echo "  + vm.page-cluster = 0"
 fi
 
 echo
