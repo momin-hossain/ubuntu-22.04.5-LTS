@@ -2,6 +2,7 @@
 # Camera button: select an area, then annotate it in ksnip.
 # A stray click (selection under 20 px) is thrown away instead of opening ksnip.
 exec 9>/tmp/snap-annotate.lock; flock -n 9 || exit 0   # one selector at a time
+logger -t snap-annotate "started by $(ps -o comm= -p $PPID 2>/dev/null)"   # see: journalctl -t snap-annotate
 f="/tmp/shot-$(date +%s).png"
 sleep 0.3
 gnome-screenshot -a -f "$f" || exit 0
